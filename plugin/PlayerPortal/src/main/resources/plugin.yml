@@ -1,0 +1,4 @@
+name: PlayerPortal
+version: 1.0
+main: dev.rtyocum.mc.Main
+api-version: 1.19
