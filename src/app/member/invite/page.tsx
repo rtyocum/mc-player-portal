@@ -9,9 +9,11 @@ import {
 import { INVITE } from "@/lib/permissions";
 import InviteButton from "./invite-button";
 import { redirect } from "next/navigation";
-import { authorizeUser } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 export default async function Invite() {
-  if (!(await authorizeUser(INVITE))) {
+  const session = await getSession();
+  const permission = session?.user.permission ?? 0;
+  if (!session || !(permission & INVITE)) {
     return redirect("/forbidden");
   }
 

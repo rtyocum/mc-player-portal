@@ -10,10 +10,10 @@ import { useEditUserDialogState } from "./users-edit";
 
 export default function UsersContainer({ users }: { users: User[] }) {
   const { session } = useSession();
-  const canEdit = ((session?.userInfo?.permission || 0) & EDIT_USER) !== 0;
+  const canEdit = ((session?.user.permission || 0) & EDIT_USER) !== 0;
   const canEditPermissions =
-    ((session?.userInfo?.permission || 0) & EDIT_PERMISSIONS) !== 0;
-  const canDelete = ((session?.userInfo?.permission || 0) & DELETE_USER) !== 0;
+    ((session?.user.permission || 0) & EDIT_PERMISSIONS) !== 0;
+  const canDelete = ((session?.user.permission || 0) & DELETE_USER) !== 0;
 
   const editUserDialogState = useEditUserDialogState();
   const deleteUserDialogState = useDeleteItemDialogState();

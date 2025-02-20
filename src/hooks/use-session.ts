@@ -10,7 +10,7 @@ export function useSession() {
         const response = await fetch("/api/auth/session");
         if (response.ok) {
           const session = (await response.json()) as SessionData;
-          setSession(session);
+          setSession(session.user ? session : null);
         }
       } finally {
         setLoading(false);

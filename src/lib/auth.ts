@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import * as client from "openid-client";
 import { prisma } from "./prisma";
+import * as jose from "jose";
 
 /**
  * Configuration for the OpenID Connect client
@@ -20,8 +21,14 @@ export const clientConfig = {
   code_challenge_method: "S256",
 };
 
+export interface PreSessionData {
+  inviteToken?: string;
+  codeVerifier?: string;
+  state?: string;
+}
+
 export interface SessionData {
-  user?: {
+  user: {
     uuid: string;
     username: string;
     name: string;
@@ -33,20 +40,22 @@ export interface SessionData {
 
 export const sessionOptions = {
   cookieName: "portalsession",
+  secret: jose.base64url.decode(process.env.AUTH_SESSION_SECRET!),
   cookieOptions: {
     secure: process.env.NODE_ENV === "production",
   },
   ttl: 60 * 60 * 24 * 7, // 1 week
+  maxSessions: 5, // Maximum number of sessions per user. old sessions will be deleted
 };
 
-export async function getSession(): Promise<SessionData> {
+export async function getSession(): Promise<SessionData | null> {
   const cookiesList = await cookies();
   const sessionCookie = cookiesList.get(sessionOptions.cookieName);
   if (sessionCookie === undefined) {
-    return { user: undefined };
+    return null;
   }
   const session = await prisma.session.findUnique({
-    where: { id: sessionCookie.value },
+    where: { token: sessionCookie.value },
     include: {
       user: {
         select: {
@@ -68,7 +77,7 @@ export async function getSession(): Promise<SessionData> {
     return { user: session.user };
   }
 
-  return { user: undefined };
+  return null;
 }
 
 /**

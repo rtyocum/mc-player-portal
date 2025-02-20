@@ -170,6 +170,7 @@ export default function EditUserDialog(props: Props) {
                             >
                               <div className="flex justify-center items-center gap-2">
                                 <Checkbox
+                                  id="view-membership-checkbox"
                                   checked={
                                     !!((field?.value ?? 0) & VIEW_MEMBERSHIP)
                                   }
@@ -181,10 +182,16 @@ export default function EditUserDialog(props: Props) {
                                     !props.editablePermissions
                                   }
                                 />
-                                <p className="text-sm">View Membership</p>
+                                <label
+                                  htmlFor="view-membership-checkbox"
+                                  className="text-sm"
+                                >
+                                  View Membership
+                                </label>
                               </div>
                               <div className="flex justify-center items-center gap-2">
                                 <Checkbox
+                                  id="join-server-checkbox"
                                   checked={
                                     !!((field?.value ?? 0) & JOIN_SERVER)
                                   }
@@ -194,10 +201,16 @@ export default function EditUserDialog(props: Props) {
                                     !props.editablePermissions
                                   }
                                 />
-                                <p className="text-sm">Join Server</p>
+                                <label
+                                  htmlFor="join-server-checkbox"
+                                  className="text-sm"
+                                >
+                                  Join Server
+                                </label>
                               </div>
                               <div className="flex justify-center items-center gap-2">
                                 <Checkbox
+                                  id="invite-checkbox"
                                   checked={!!((field?.value ?? 0) & INVITE)}
                                   onCheckedChange={onCheckedChange(INVITE)}
                                   disabled={
@@ -205,7 +218,12 @@ export default function EditUserDialog(props: Props) {
                                     !props.editablePermissions
                                   }
                                 />
-                                <p className="text-sm">Invite</p>
+                                <label
+                                  htmlFor="invite-checkbox"
+                                  className="text-sm"
+                                >
+                                  Invite
+                                </label>
                               </div>
                               <p className="text-sm">Member Permissions</p>
                             </div>
@@ -219,6 +237,7 @@ export default function EditUserDialog(props: Props) {
                             >
                               <div className="flex justify-center items-center gap-2">
                                 <Checkbox
+                                  id="view-users-checkbox"
                                   checked={!!((field?.value ?? 0) & VIEW_USERS)}
                                   onCheckedChange={onCheckedChange(VIEW_USERS)}
                                   disabled={
@@ -226,10 +245,16 @@ export default function EditUserDialog(props: Props) {
                                     !props.editablePermissions
                                   }
                                 />
-                                <p className="text-sm">View Users</p>
+                                <label
+                                  htmlFor="view-users-checkbox"
+                                  className="text-sm"
+                                >
+                                  View Users
+                                </label>
                               </div>
                               <div className="flex justify-center items-center gap-2">
                                 <Checkbox
+                                  id="add-user-checkbox"
                                   checked={!!((field?.value ?? 0) & ADD_USER)}
                                   onCheckedChange={onCheckedChange(ADD_USER)}
                                   disabled={
@@ -237,10 +262,16 @@ export default function EditUserDialog(props: Props) {
                                     !props.editablePermissions
                                   }
                                 />
-                                <p className="text-sm">Add User</p>
+                                <label
+                                  htmlFor="add-user-checkbox"
+                                  className="text-sm"
+                                >
+                                  Add User
+                                </label>
                               </div>
                               <div className="flex justify-center items-center gap-2">
                                 <Checkbox
+                                  id="edit-user-checkbox"
                                   checked={!!((field?.value ?? 0) & EDIT_USER)}
                                   onCheckedChange={onCheckedChange(EDIT_USER)}
                                   disabled={
@@ -248,10 +279,16 @@ export default function EditUserDialog(props: Props) {
                                     !props.editablePermissions
                                   }
                                 />
-                                <p className="text-sm">Edit User</p>
+                                <label
+                                  htmlFor="edit-user-checkbox"
+                                  className="text-sm"
+                                >
+                                  Edit User
+                                </label>
                               </div>
                               <div className="flex justify-center items-center gap-2">
                                 <Checkbox
+                                  id="edit-permissions-checkbox"
                                   checked={
                                     !!((field?.value ?? 0) & EDIT_PERMISSIONS)
                                   }
@@ -263,10 +300,16 @@ export default function EditUserDialog(props: Props) {
                                     !props.editablePermissions
                                   }
                                 />
-                                <p className="text-sm">Edit User Permissions</p>
+                                <label
+                                  htmlFor="edit-permissions-checkbox"
+                                  className="text-sm"
+                                >
+                                  Edit User Permissions
+                                </label>
                               </div>
                               <div className="flex  justify-center items-center gap-2">
                                 <Checkbox
+                                  id="delete-user-checkbox"
                                   checked={
                                     !!((field?.value ?? 0) & DELETE_USER)
                                   }
@@ -277,7 +320,12 @@ export default function EditUserDialog(props: Props) {
                                   }
                                   value={128}
                                 />
-                                <p className="text-sm">Delete User</p>
+                                <label
+                                  htmlFor="delete-user-checkbox"
+                                  className="text-sm"
+                                >
+                                  Delete User
+                                </label>
                               </div>
                               <p className="text-sm">Admin Permissions</p>
                             </div>

@@ -37,11 +37,11 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                {session && session.isLoggedIn ? (
-                  session.userInfo?.picture && session.userInfo.name ? (
+                {session ? (
+                  session.user.picture && session.user.name ? (
                     <AvatarImage
-                      src={session.userInfo.picture}
-                      alt={session.userInfo.name}
+                      src={session.user.picture}
+                      alt={session.user.name}
                     />
                   ) : null
                 ) : null}
@@ -49,10 +49,10 @@ export function NavUser() {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {session?.userInfo?.name ?? defaults.name}
+                  {session?.user.name ?? defaults.name}
                 </span>
                 <span className="truncate text-xs">
-                  {session?.userInfo?.email ?? "Not Signed In"}
+                  {session?.user.email ?? "Not Signed In"}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -68,10 +68,10 @@ export function NavUser() {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   {session ? (
-                    session.userInfo?.picture && session.userInfo.name ? (
+                    session.user.picture && session.user.name ? (
                       <AvatarImage
-                        src={session.userInfo.picture}
-                        alt={session.userInfo.name}
+                        src={session.user.picture}
+                        alt={session.user.name}
                       />
                     ) : null
                   ) : null}
@@ -79,10 +79,10 @@ export function NavUser() {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {session?.userInfo?.name ?? defaults.name}
+                    {session?.user.name ?? defaults.name}
                   </span>
                   <span className="truncate text-xs">
-                    {session?.userInfo?.email ?? "Not Signed In"}
+                    {session?.user.email ?? "Not Signed In"}
                   </span>
                 </div>
               </div>

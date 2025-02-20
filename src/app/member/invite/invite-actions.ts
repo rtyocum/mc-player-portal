@@ -1,12 +1,13 @@
 "use server";
 
-import { authorizeUser, getSession } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { INVITE } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 export default async function createInvite() {
   const session = await getSession();
-  if (!(await authorizeUser(INVITE))) {
+  const permission = session?.user.permission ?? 0;
+  if (!session || !(permission & INVITE)) {
     return {
       token: null,
     };
@@ -20,7 +21,7 @@ export default async function createInvite() {
       expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 24 hours
       owner: {
         connect: {
-          uuid: session.userInfo!.uuid,
+          uuid: session.user.uuid,
         },
       },
     },

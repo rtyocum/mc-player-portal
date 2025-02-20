@@ -1,15 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CopyButton from "@/components/ui/copy-button";
-import { authorizeUser, getSession } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { JOIN_SERVER, MEMBER, VIEW_MEMBERSHIP } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 
 export default async function Membership() {
   const session = await getSession();
-  const permission = session?.userInfo?.permission ?? 0;
-  if (!(await authorizeUser(VIEW_MEMBERSHIP))) {
+  const permission = session?.user.permission ?? 0;
+  if (!session || !(permission & VIEW_MEMBERSHIP)) {
     return redirect("/forbidden");
   }
+
   return (
     <div className="flex h-full flex-col items-center justify-center gap-5 p-10">
       <Card className="min-w-40 max-w-7xl">

@@ -2,12 +2,18 @@ import "../globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Navbar } from "@/components/nav/navbar";
 import { MainSidebar } from "@/components/nav/main-sidebar";
+import { getSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function SecureLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getSession();
+  if (!session) {
+    return redirect("/api/auth/login");
+  }
   return (
     <SidebarProvider>
       <MainSidebar />

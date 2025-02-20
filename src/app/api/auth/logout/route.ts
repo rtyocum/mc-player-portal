@@ -1,9 +1,6 @@
-import {
-  defaultSession,
-  getClientConfig,
-  getSession,
-  clientConfig,
-} from "@/lib/auth";
+import { getClientConfig, clientConfig, sessionOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
 import * as client from "openid-client";
 
 /**
@@ -12,17 +9,22 @@ import * as client from "openid-client";
  * For more information, see https://openid.net/specs/openid-connect-core-1_0.html
  **/
 export async function GET() {
-  const session = await getSession();
+  const cookiesList = await cookies();
+  const sessionCookie = cookiesList.get(sessionOptions.cookieName);
+  if (sessionCookie === undefined) {
+    return Response.redirect(clientConfig.post_logout_redirect_uri);
+  }
+
   const openIdClientConfig = await getClientConfig();
   const endSessionUrl = client.buildEndSessionUrl(openIdClientConfig, {
     post_logout_redirect_uri: clientConfig.post_logout_redirect_uri,
-    id_token_hint: session.accessToken!,
   });
-  session.isLoggedIn = defaultSession.isLoggedIn;
-  session.accessToken = defaultSession.accessToken;
-  session.userInfo = defaultSession.userInfo;
-  session.codeVerifier = defaultSession.codeVerifier;
-  session.state = defaultSession.state;
-  await session.save();
+
+  cookiesList.delete(sessionOptions.cookieName);
+
+  await prisma.session.delete({
+    where: { token: sessionCookie.value },
+  });
+
   return Response.redirect(endSessionUrl.href);
 }

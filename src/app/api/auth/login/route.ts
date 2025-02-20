@@ -1,6 +1,8 @@
-import { getClientConfig, getSession, clientConfig } from "@/lib/auth";
+import { getClientConfig, clientConfig, sessionOptions } from "@/lib/auth";
 import { NextRequest } from "next/server";
+import * as jose from "jose";
 import * as client from "openid-client";
+import { cookies } from "next/headers";
 
 /**
  * Route to handle the callback from the OpenID Provider
@@ -8,7 +10,7 @@ import * as client from "openid-client";
  * For more information, see https://openid.net/specs/openid-connect-core-1_0.html
  **/
 export async function GET(request: NextRequest) {
-  const session = await getSession();
+  const cookieStore = await cookies();
   const token = request.nextUrl.searchParams.get("token") || undefined;
   const codeVerifier = client.randomPKCECodeVerifier();
   const codeChallenge = await client.calculatePKCECodeChallenge(codeVerifier);
@@ -29,9 +31,24 @@ export async function GET(request: NextRequest) {
     parameters,
   );
 
-  session.inviteToken = token;
-  session.codeVerifier = codeVerifier;
-  session.state = state;
-  await session.save();
+  const jwt = await new jose.EncryptJWT({
+    inviteToken: token,
+    codeVerifier: codeVerifier,
+    state: state,
+  })
+    .setProtectedHeader({ alg: "dir", enc: "A256GCM" })
+    .setIssuedAt()
+    .setIssuer("mc.rtyocum.dev")
+    .setAudience("mc.rtyocum.dev")
+    .setExpirationTime("20m")
+    .encrypt(sessionOptions.secret);
+
+  cookieStore.set("portalpresession", jwt, {
+    secure: sessionOptions.cookieOptions.secure,
+    httpOnly: true,
+    maxAge: 60 * 20,
+    sameSite: "lax",
+  });
+
   return Response.redirect(redirectTo.href);
 }

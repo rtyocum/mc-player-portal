@@ -1,15 +1,17 @@
 import {
   getClientConfig,
-  getSession,
   clientConfig,
-  defaultSession,
+  sessionOptions,
+  PreSessionData,
 } from "@/lib/auth";
 import { MEMBER } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { User } from "@prisma/client";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { NextRequest } from "next/server";
 import * as client from "openid-client";
+import * as jose from "jose";
+import { randomBytes } from "crypto";
 
 type UserCreateParams = {
   uuid: string;
@@ -26,13 +28,31 @@ type UserCreateParams = {
 export async function GET(request: NextRequest) {
   // Many of these functions can throw errors, so we wrap the entire function in a try-catch block, its the easiest way and denies by default
   try {
-    const session = await getSession();
-    const tokenSet = await getAuthorizationCode(request);
+    const cookieStore = await cookies();
+    const jwt = cookieStore.get("portalpresession");
+    if (!jwt) {
+      return Response.redirect(clientConfig.login_forbidden_route);
+    }
+
+    const preSession = await jose.jwtDecrypt<PreSessionData>(
+      jwt.value,
+      sessionOptions.secret,
+      {
+        audience: "mc.rtyocum.dev",
+        issuer: "mc.rtyocum.dev",
+      },
+    );
+
+    await clearPreSession();
+
+    const { inviteToken } = preSession.payload;
+
+    const tokenSet = await getAuthorizationCode(request, preSession.payload);
 
     const { access_token: msToken } = tokenSet;
     const claims = tokenSet.claims()!;
 
-    const { accessToken, profile } = await minecraftAuth(msToken);
+    const { profile } = await minecraftAuth(msToken);
 
     const dbUser = await prisma.user.findUnique({
       where: {
@@ -43,8 +63,8 @@ export async function GET(request: NextRequest) {
     let user: User | undefined;
 
     // If the user does not exist and has an invite token, check if the invite is valid. If it is, create the user
-    if (!dbUser && session.inviteToken) {
-      user = await verifyAndUseInvite(session.inviteToken, {
+    if (!dbUser && inviteToken) {
+      user = await verifyAndUseInvite(inviteToken, {
         uuid: profile.id,
         username: profile.name,
         name: claims.name as string,
@@ -68,25 +88,27 @@ export async function GET(request: NextRequest) {
 
     // If the user does not exist and does not have an invite token, set an unauthenticated session
     if (!user) {
-      await setUnauthenticatedSession();
       return Response.redirect(clientConfig.login_forbidden_route);
     }
 
     // Set the session information and redirect the user to the post-login route
-    session.isLoggedIn = true;
-    session.accessToken = accessToken;
-    session.userInfo = {
-      sub: claims.sub,
-      uuid: user.uuid,
-      username: user.username,
-      name: user.name,
-      email: user.email,
-      picture: `https://minotar.net/avatar/${user.uuid}`,
-      permission: user.permission,
-      updated_at: user.updatedAt,
-    };
 
-    await session.save();
+    const sessionToken = randomBytes(32).toString("hex");
+    await prisma.session.create({
+      data: {
+        token: sessionToken,
+        expiresAt: new Date(Date.now() + sessionOptions.ttl * 1000),
+        userId: user.id,
+      },
+    });
+
+    cookieStore.set(sessionOptions.cookieName, sessionToken, {
+      secure: sessionOptions.cookieOptions.secure,
+      httpOnly: true,
+      maxAge: sessionOptions.ttl,
+      sameSite: "lax",
+    });
+
     return Response.redirect(clientConfig.post_login_route);
   } catch {
     return Response.redirect(clientConfig.login_forbidden_route);
@@ -98,8 +120,10 @@ export async function GET(request: NextRequest) {
  * @param request The request object
  * @returns The token set
  **/
-async function getAuthorizationCode(request: NextRequest) {
-  const session = await getSession();
+async function getAuthorizationCode(
+  request: NextRequest,
+  { codeVerifier, state }: PreSessionData,
+) {
   const openIdClientConfig = await getClientConfig();
 
   // Get the current URL
@@ -116,8 +140,8 @@ async function getAuthorizationCode(request: NextRequest) {
     openIdClientConfig,
     currentUrl,
     {
-      pkceCodeVerifier: session.codeVerifier,
-      expectedState: session.state,
+      pkceCodeVerifier: codeVerifier,
+      expectedState: state,
     },
   );
 
@@ -265,14 +289,9 @@ async function minecraftAuth(access_token: string) {
 }
 
 /**
- * Function to set an unauthenticated session
- * It clears the session and sets the default session values
+ * Clear the pre-session cookie
  **/
-async function setUnauthenticatedSession() {
-  const session = await getSession();
-  session.isLoggedIn = defaultSession.isLoggedIn;
-  session.accessToken = defaultSession.accessToken;
-  session.userInfo = defaultSession.userInfo;
-
-  await session.save();
+async function clearPreSession() {
+  const cookieStore = await cookies();
+  cookieStore.delete("portalpresession");
 }

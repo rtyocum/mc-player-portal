@@ -16,7 +16,7 @@ import { useSession } from "@/hooks/use-session";
 
 export function SidebarNav() {
   const { session } = useSession();
-  const permission = session?.userInfo?.permission ?? 0;
+  const permission = session?.user.permission ?? 0;
   const { isMobile, state, toggleSidebar } = useSidebar();
   const closeSidebar = () => {
     if (isMobile && state === "expanded") {
