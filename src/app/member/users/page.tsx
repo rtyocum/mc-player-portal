@@ -14,7 +14,7 @@ export default async function UsersPage() {
   const users = await prisma.user.findMany({
     select: {
       id: true,
-      uuid: !!(permission & VIEW_NAMES_EMAILS),
+      uuid: true,
       username: true,
       email: !!(permission & VIEW_NAMES_EMAILS),
       picture: true,
