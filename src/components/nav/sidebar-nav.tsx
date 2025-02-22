@@ -11,7 +11,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { INVITE, VIEW_MEMBERSHIP, VIEW_USERS } from "@/lib/permissions";
+import {
+  INVITE,
+  VIEW_INVITES,
+  VIEW_MEMBERSHIP,
+  VIEW_USERS,
+} from "@/lib/permissions";
 import { useSession } from "@/hooks/use-session";
 
 export function SidebarNav() {
@@ -71,6 +76,16 @@ export function SidebarNav() {
                   >
                     <UserRoundCog />
                     <span>Users</span>
+                  </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
+            ) : null}
+            {permission & VIEW_INVITES ? (
+              <SidebarMenuItem>
+                <Link href="/member/invites">
+                  <SidebarMenuButton tooltip="Invites" onClick={closeSidebar}>
+                    <UserRoundCog />
+                    <span>Invites</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>

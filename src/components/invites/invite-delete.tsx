@@ -12,28 +12,31 @@ import {
 
 import { DialogState } from "@/components/dialog/dialog-state";
 import { create } from "zustand";
-import { deleteUser } from "@/app/member/users/user-actions";
-import { UserView } from "./users-container";
+import { InviteWithOwner } from "./columns";
+import { deleteInvite } from "@/app/member/invites/invite-actions";
 
-export const useDeleteUserDialogState = create<DialogState<UserView>>(
+export const useDeleteInviteDialogState = create<DialogState<InviteWithOwner>>(
   (set) => ({
     isOpen: false,
     toggleModal: () =>
-      set((state: DialogState<UserView>) => ({ isOpen: !state.isOpen })),
+      set((state: DialogState<InviteWithOwner>) => ({ isOpen: !state.isOpen })),
     data: null,
-    setData: (data: UserView) => set(() => ({ data: data })),
+    setData: (data: InviteWithOwner) => set(() => ({ data: data })),
   }),
 );
 
-export default function DeleteUserDialog(props: DialogState<UserView>) {
+export default function DeleteInviteDialog(
+  props: DialogState<InviteWithOwner>,
+) {
   return (
     <Dialog open={props.isOpen} onOpenChange={props.toggleModal}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader className="mb-5">
-          <DialogTitle>Are you sure you want to delete this user?</DialogTitle>
+          <DialogTitle>
+            Are you sure you want to delete this invite?
+          </DialogTitle>
           <DialogDescription>
-            They will immedietely lose access to this page, their invites
-            deactivated, and no longer be able to login.
+            No one will be able to use this invite to join the server.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -42,7 +45,7 @@ export default function DeleteUserDialog(props: DialogState<UserView>) {
             type="submit"
             onClick={() => {
               if (!props.data) return;
-              deleteUser(props.data.id);
+              deleteInvite(props.data.id);
               props.toggleModal();
             }}
           >

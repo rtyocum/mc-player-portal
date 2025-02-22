@@ -9,57 +9,67 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User } from "@prisma/client";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, HeaderContext } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { DialogState } from "../dialog/dialog-state";
-import DeleteUserDialog from "./user-delete";
-import EditUserDialog from "./users-edit";
+import { UserView } from "./users-container";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
 export const columns = (
-  editDialogState: DialogState<User>,
-  deleteDialogState: DialogState<User>,
+  editDialogState: DialogState<UserView>,
+  deleteDialogState: DialogState<UserView>,
   {
     canEdit,
-    canEditPermissions,
     canDelete,
-  }: { canEdit: boolean; canEditPermissions: boolean; canDelete: boolean },
-): ColumnDef<User>[] => [
+    canViewPersonalInfo,
+  }: {
+    canEdit: boolean;
+    canDelete: boolean;
+    canViewPersonalInfo: boolean;
+  },
+): ColumnDef<UserView>[] => [
   {
     accessorKey: "id",
     header: "ID",
   },
-  {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
+  ...(canViewPersonalInfo
+    ? [
+        {
+          accessorKey: "name",
+          header: ({ column }: HeaderContext<UserView, unknown>) => {
+            return (
+              <Button
+                variant="ghost"
+                onClick={() =>
+                  column.toggleSorting(column.getIsSorted() === "asc")
+                }
+              >
+                Name
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </Button>
+            );
+          },
+        },
+        {
+          accessorKey: "email",
+          header: ({ column }: HeaderContext<UserView, unknown>) => {
+            return (
+              <Button
+                variant="ghost"
+                onClick={() =>
+                  column.toggleSorting(column.getIsSorted() === "asc")
+                }
+              >
+                Email
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </Button>
+            );
+          },
+        },
+      ]
+    : []),
   {
     accessorKey: "username",
     header: ({ column }) => {
@@ -127,12 +137,6 @@ export const columns = (
               ) : null}
             </DropdownMenuContent>
           </DropdownMenu>
-          <EditUserDialog
-            state={editDialogState}
-            editable={canEdit}
-            editablePermissions={canEditPermissions}
-          />
-          <DeleteUserDialog {...deleteDialogState} />
         </>
       );
     },

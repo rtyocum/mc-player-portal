@@ -4,7 +4,7 @@ import {
   sessionOptions,
   PreSessionData,
 } from "@/lib/auth";
-import { MEMBER } from "@/lib/permissions";
+import { INVITE, MEMBER } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { User } from "@prisma/client";
 import { cookies, headers } from "next/headers";
@@ -162,6 +162,13 @@ async function verifyAndUseInvite(
     where: {
       token: inviteToken,
     },
+    include: {
+      owner: {
+        select: {
+          permission: true,
+        },
+      },
+    },
   });
 
   if (!invite) {
@@ -174,6 +181,11 @@ async function verifyAndUseInvite(
 
   // Verify Exipration
   if (new Date() > invite.expiresAt) {
+    return undefined;
+  }
+
+  // Verify the owner has the correct permission for inviting
+  if (!((invite.owner.permission ?? 0) & INVITE)) {
     return undefined;
   }
 
