@@ -1,5 +1,0 @@
-{
-  "watch": ["src/server.mts"],
-  "exec": "node --loader ts-node/esm src/server.mts",
-  "ext": "js ts mts"
-}
