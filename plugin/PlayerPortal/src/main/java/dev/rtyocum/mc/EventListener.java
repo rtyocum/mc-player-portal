@@ -6,6 +6,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,9 +19,9 @@ public class EventListener implements Listener {
     @EventHandler
     public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent event) {
         ObjectMapper mapper = new ObjectMapper();
-        String uuid = event.getUniqueId().toString().replace("-", "");
+        UUID uuid = event.getUniqueId();
         Map<String, String> body = new HashMap<>();
-        body.put("uuid", uuid);
+        body.put("uuid", uuid.toString().replace("-", ""));
         try {
             String json = mapper.writeValueAsString(body);
             HttpClient client = HttpClient.newHttpClient();
@@ -32,19 +33,38 @@ public class EventListener implements Listener {
                     .build();
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
-            Map<String, String> responseMap = mapper.readValue(response.body(),
-                    new TypeReference<Map<String, String>>() {
-                    });
-            if (response.statusCode() == 200) {
-                event.allow();
-            } else {
+
+            if (response.statusCode() == 404) {
                 event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-                        responseMap.get("error"));
+                        "You must be a member to join this server. If you have an invite, you must claim it before joining.");
+                return;
+            } else if (response.statusCode() != 200) {
+                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
+                        "An error occurred while verifying your account.");
+                return;
             }
+            Map<String, Integer> responseMap = mapper.readValue(response.body(),
+                    new TypeReference<Map<String, Integer>>() {
+                    });
+            int permission = responseMap.get("permission");
+
+            if (permission == Permissions.BLOCKED) {
+                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
+                        "You are not allowed to join this server.");
+                return;
+            } else if ((permission & Permissions.JOIN_SERVER) == 0) {
+                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
+                        "You must be a member to join this server.");
+                return;
+            }
+
+            event.allow();
+
         } catch (Exception e) {
             e.printStackTrace();
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
                     "An error occurred while verifying your account.");
+            return;
         }
     }
 

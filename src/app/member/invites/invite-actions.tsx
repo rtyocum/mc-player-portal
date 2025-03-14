@@ -16,9 +16,6 @@ export async function addInvite(data: FormData) {
   const session = await getSession();
   const permission = session?.user.permission ?? 0;
 
-  console.log("addInvite");
-  console.log(data);
-
   if (!session || !(permission & ADD_INVITE)) {
     return;
   }

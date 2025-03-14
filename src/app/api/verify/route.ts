@@ -1,4 +1,3 @@
-import { BLOCKED, JOIN_SERVER } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -15,23 +14,12 @@ export async function POST(request: Request) {
       return Response.json({ error: "uuid is required" }, { status: 400 });
     }
     const user = await prisma.user.findUnique({ where: { uuid } });
-    if (user && user.permission === BLOCKED) {
-      return Response.json(
-        { error: "You are banned from this server" },
-        { status: 403 },
-      );
+    if (!user) {
+      return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    if (!user || !(user.permission & JOIN_SERVER)) {
-      return Response.json(
-        {
-          error:
-            "You do not have access to this server. This server is INVITE ONLY. If you have received an invite, you must login to the website to claim it.",
-        },
-        { status: 403 },
-      );
-    }
-    return Response.json({ message: "Welcome to the server" });
+    // Permision checking will be done on the plugin side. Just return the user's permission level
+    return Response.json({ permission: user.permission }, { status: 200 });
   } catch (e) {
     console.error(e);
     return Response.json({ error: "Internal Server Error" }, { status: 500 });

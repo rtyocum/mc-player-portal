@@ -2,3 +2,8 @@ name: PlayerPortal
 version: 1.0
 main: dev.rtyocum.mc.Main
 api-version: 1.19
+commands:
+  ban:
+    description: Ban a player
+    usage: /ban <player>
+    permission: playerportal.ban

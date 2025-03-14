@@ -157,7 +157,7 @@ export default function EditUserDialog(props: Props) {
                           <div className="flex gap-10">
                             <div
                               className={
-                                "flex flex-col flex-wrap gap-2 justify-between items-start grow border p-5 border-input shadow-sm rounded-md max-h-[225px]" +
+                                "flex flex-col flex-wrap gap-2 justify-between items-start grow border p-5 border-input shadow-sm rounded-md max-h-[275px]" +
                                 (!props.editablePermissions
                                   ? " opacity-50"
                                   : "")

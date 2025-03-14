@@ -14,6 +14,11 @@ export default async function SecureLayout({
   if (!session) {
     return redirect("/api/auth/login");
   }
+
+  if (session.user.permission === 0) {
+    return redirect("/forbidden");
+  }
+
   return (
     <SidebarProvider>
       <MainSidebar />

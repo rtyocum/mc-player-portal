@@ -1,6 +1,7 @@
 "use server";
 
 import { getSession } from "@/lib/auth";
+import { publish } from "@/lib/mq";
 import { DELETE_USER, EDIT_PERMISSIONS, EDIT_USER } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -21,13 +22,22 @@ export async function updateUser(id: string, data: FormData) {
 
   const canEditPermissions = (permission & EDIT_PERMISSIONS) !== 0;
 
-  await prisma.user.update({
+  const user = await prisma.user.update({
     where: { id },
     data: {
       note: data.note,
       permission: canEditPermissions ? data.permission : undefined,
     },
   });
+
+  await publish(
+    "user.update",
+    JSON.stringify({
+      uuid: user.uuid,
+      username: user.username,
+      permission: user.permission,
+    }),
+  );
 
   revalidatePath("/member/users");
 }
@@ -40,8 +50,16 @@ export async function deleteUser(id: string) {
     return;
   }
 
-  await prisma.user.delete({
+  const user = await prisma.user.delete({
     where: { id },
   });
+  await publish(
+    "user.delete",
+    JSON.stringify({
+      uuid: user.uuid,
+      username: user.username,
+      permission: user.permission,
+    }),
+  );
   revalidatePath("/member/users");
 }

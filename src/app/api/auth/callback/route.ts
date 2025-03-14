@@ -12,6 +12,7 @@ import { NextRequest } from "next/server";
 import * as client from "openid-client";
 import * as jose from "jose";
 import { randomBytes } from "crypto";
+import { publish } from "@/lib/mq";
 
 type UserCreateParams = {
   uuid: string;
@@ -73,6 +74,10 @@ export async function GET(request: NextRequest) {
 
       // If the user exists, update the user information.
     } else if (dbUser) {
+      if (dbUser.permission === 0) {
+        // We don't want to allow users to login if they are banned, nor update their information
+        return Response.redirect(clientConfig.login_forbidden_route);
+      }
       user = await prisma.user.update({
         where: {
           uuid: profile.id,
@@ -211,6 +216,15 @@ async function verifyAndUseInvite(
       acceptedInviteId: invite.id,
     },
   });
+
+  await publish(
+    "user.create",
+    JSON.stringify({
+      uuid: user.uuid,
+      username: user.username,
+      permission: user.permission,
+    }),
+  );
 
   return user;
 }
