@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     const preSession = await jose.jwtDecrypt<PreSessionData>(
       jwt.value,
-      sessionOptions.secret,
+      sessionOptions.secret(),
       {
         audience: "mc.rtyocum.dev",
         issuer: "mc.rtyocum.dev",

@@ -14,7 +14,7 @@ import {
 import { useState } from "react";
 import CopyButton from "@/components/ui/copy-button";
 
-export default function InviteButton() {
+export default function InviteButton({ appUrl }: { appUrl: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [token, setToken] = useState("");
   const submit = async () => {
@@ -41,7 +41,7 @@ export default function InviteButton() {
           </AlertDialogHeader>
           <CopyButton
             variant="outline"
-            text={`${process.env.NEXT_PUBLIC_APP_URL!}/api/auth/login?token=${token}`}
+            text={`${appUrl}/api/auth/login?token=${token}`}
           >
             Copy Invite Link
           </CopyButton>

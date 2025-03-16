@@ -9,7 +9,7 @@ import {
 import { INVITE } from "@/lib/permissions";
 import InviteButton from "./invite-button";
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { clientConfig, getSession } from "@/lib/auth";
 export default async function Invite() {
   const session = await getSession();
   const permission = session?.user.permission ?? 0;
@@ -27,7 +27,7 @@ export default async function Invite() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center items-center">
-          <InviteButton />
+          <InviteButton appUrl={clientConfig.audience} />
         </CardContent>
         <CardFooter className="flex flex-col">
           <p className="text-sm text-gray-500">

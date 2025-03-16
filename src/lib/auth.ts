@@ -16,8 +16,8 @@ export const clientConfig = {
   post_logout_redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL!}`,
   response_type: "code",
   grant_type: "authorization_code",
-  post_login_route: `${process.env.NEXT_PUBLIC_APP_URL!}/member/home`,
-  login_forbidden_route: `${process.env.NEXT_PUBLIC_APP_URL!}/forbidden`,
+  post_login_route: `${process.env.APP_URL!}/member/home`,
+  login_forbidden_route: `${process.env.APP_URL!}/forbidden`,
   code_challenge_method: "S256",
 };
 
@@ -38,9 +38,12 @@ export interface SessionData {
   };
 }
 
+const getAuthSecret = () =>
+  jose.base64url.decode(process.env.AUTH_SESSION_SECRET!);
+
 export const sessionOptions = {
   cookieName: "portalsession",
-  secret: jose.base64url.decode(process.env.AUTH_SESSION_SECRET!),
+  secret: getAuthSecret,
   cookieOptions: {
     secure: process.env.NODE_ENV === "production",
   },

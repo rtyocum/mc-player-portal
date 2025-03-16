@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     .setIssuer("mc.rtyocum.dev")
     .setAudience("mc.rtyocum.dev")
     .setExpirationTime("20m")
-    .encrypt(sessionOptions.secret);
+    .encrypt(sessionOptions.secret());
 
   cookieStore.set("portalpresession", jwt, {
     secure: sessionOptions.cookieOptions.secure,
