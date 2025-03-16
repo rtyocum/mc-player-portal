@@ -7,17 +7,17 @@ import * as jose from "jose";
  * Configuration for the OpenID Connect client
  **/
 export const clientConfig = {
-  issuer: process.env.AUTH_ISSUER_URL!,
-  audience: process.env.NEXT_PUBLIC_APP_URL!,
-  client_id: process.env.AUTH_CLIENT_ID!,
-  client_secret: process.env.AUTH_CLIENT_SECRET!,
-  scope: process.env.AUTH_SCOPE!,
+  issuer: process.env.AUTH_ISSUER_URL || "",
+  audience: process.env.NEXT_PUBLIC_APP_URL || "",
+  client_id: process.env.AUTH_CLIENT_ID || "",
+  client_secret: process.env.AUTH_CLIENT_SECRET || "",
+  scope: process.env.AUTH_SCOPE || "",
   redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL!}/api/auth/callback`,
-  post_logout_redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL!}`,
+  post_logout_redirect_uri: process.env.NEXT_PUBLIC_APP_URL! || "",
   response_type: "code",
   grant_type: "authorization_code",
-  post_login_route: `${process.env.NEXT_PUBLIC_APP_URL!}/member/home`,
-  login_forbidden_route: `${process.env.NEXT_PUBLIC_APP_URL!}/forbidden`,
+  post_login_route: `${process.env.NEXT_PUBLIC_APP_URL || ""}/member/home`,
+  login_forbidden_route: `${process.env.NEXT_PUBLIC_APP_URL || ""}/forbidden`,
   code_challenge_method: "S256",
 };
 
