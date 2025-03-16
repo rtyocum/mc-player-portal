@@ -151,4 +151,13 @@
       </resource>
     </resources>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub rtyocum Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/rtyocum/mc-player-portal</url>
+    </repository>
+  </distributionManagement>
+
 </project>
