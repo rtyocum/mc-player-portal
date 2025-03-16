@@ -41,16 +41,6 @@ jobs:
       # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
       # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see [Usage](https://github.com/docker/build-push-action#usage) in the README of the `docker/build-push-action` repository.
       # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
-      - name: Make envfile
-        uses: SpicyPizza/create-envfile@v2.0
-        with:
-          envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          envkey_NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
-          envkey_AUTH_ISSUER_URL: ${{ secrets.AUTH_ISSUER_URL }}
-          envkey_AUTH_CLIENT_ID: ${{ secrets.AUTH_CLIENT_ID }}
-          envkey_AUTH_CLIENT_SECRET: ${{ secrets.AUTH_CLIENT_SECRET }}
-          envkey_AUTH_SCOPE: ${{ secrets.AUTH_SCOPE }}
-          envkey_AUTH_SESSION_SECRET: ${{ secrets.AUTH_SESSION_SECRET }}
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6.15.0
