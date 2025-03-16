@@ -6,10 +6,7 @@ services:
     ports:
       - '3000:3000'
     environment:
-      RABBITMQ_HOST: mq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USER: guest
-      RABBITMQ_PASSWORD: guest
+      RABBITMQ_URL: "amqp://guest:guest@mq:5672"
       DATABASE_URL: "postgres://postgres@db:5432/postgres"
       NEXT_PUBLIC_APP_URL: "http://localhost:3000"
       AUTH_ISSUER_URL: "https://login.microsoftonline.com/YourTenantIdHere/v2.0"
@@ -26,10 +23,7 @@ services:
       context: .
       dockerfile: docker/worker/Dockerfile
     environment:
-      RABBITMQ_HOST: mq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USER: guest
-      RABBITMQ_PASSWORD: guest
+      RABBITMQ_URL: "amqp://guest:guest@mq:5672"
       DATABASE_URL: "postgres://postgres@db:5432/postgres"
     depends_on:
       - mq
