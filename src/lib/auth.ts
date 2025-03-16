@@ -7,7 +7,7 @@ import * as jose from "jose";
  * Configuration for the OpenID Connect client
  **/
 export const clientConfig = {
-  issuer: process.env.AUTH_ISSUER_URL,
+  issuer: process.env.AUTH_ISSUER_URL!,
   audience: process.env.NEXT_PUBLIC_APP_URL!,
   client_id: process.env.AUTH_CLIENT_ID!,
   client_secret: process.env.AUTH_CLIENT_SECRET!,
