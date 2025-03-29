@@ -1,5 +1,9 @@
 package dev.rtyocum.mc;
 
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -11,10 +15,10 @@ public class MQ {
     private Channel channel;
     private static MQ instance;
 
-    private MQ() {
+    private MQ(String uri) throws KeyManagementException, NoSuchAlgorithmException, URISyntaxException {
         // Start the MQ service
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
+        factory.setUri(uri);
         try {
             Connection connection = factory.newConnection();
             channel = connection.createChannel();
@@ -23,10 +27,14 @@ public class MQ {
         }
     }
 
-    private static MQ getInstance() {
+    public static MQ init(String uri) throws KeyManagementException, NoSuchAlgorithmException, URISyntaxException {
         if (instance == null) {
-            instance = new MQ();
+            instance = new MQ(uri);
         }
+        return instance;
+    }
+
+    private static MQ getInstance() {
         return instance;
     }
 

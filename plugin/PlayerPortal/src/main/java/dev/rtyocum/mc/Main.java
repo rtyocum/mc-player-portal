@@ -1,6 +1,7 @@
 package dev.rtyocum.mc;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -11,6 +12,9 @@ import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.node.types.PermissionNode;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -24,12 +28,18 @@ import com.rabbitmq.client.DeliverCallback;
  * Hello world!
  */
 public class Main extends JavaPlugin {
+    FileConfiguration config = getConfig();
+
     @Override
     public void onEnable() {
+        config.addDefault("mq.uri", "amqp://guest:guest@localhost:5672");
+        config.options().copyDefaults(true);
+        saveConfig();
         getServer().getPluginManager().registerEvents(new EventListener(), this);
         getCommand("ban").setExecutor(new CommandBan());
         try {
-            startMQService();
+            String uri = config.getString("mq.uri");
+            startMQService(uri);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,10 +55,13 @@ public class Main extends JavaPlugin {
         }
     }
 
-    private void startMQService() throws IOException, TimeoutException {
+    private void startMQService(String uri)
+            throws IOException, TimeoutException, KeyManagementException, NoSuchAlgorithmException, URISyntaxException {
         // Start the MQ service
         ObjectMapper objectMapper = new ObjectMapper();
         Logger logger = Bukkit.getLogger();
+
+        MQ.init(uri);
 
         DeliverCallback createDeliverCallback = (consumerTag, delivery) -> {
             try {
