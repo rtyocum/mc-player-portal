@@ -28,6 +28,7 @@ export type InviteWithOwner = {
 };
 
 export const columns = (
+  appUrl: string,
   deleteDialogState: DialogState<InviteWithOwner>,
   { canDelete }: { canDelete: boolean },
 ): ColumnDef<InviteWithOwner>[] => [
@@ -104,7 +105,7 @@ export const columns = (
                 className="cursor-pointer"
                 onClick={() =>
                   navigator.clipboard.writeText(
-                    `${process.env.NEXT_PUBLIC_APP_URL!}/api/auth/login?token=${invite.token}`,
+                    `${appUrl}/api/auth/login?token=${invite.token}`,
                   )
                 }
               >

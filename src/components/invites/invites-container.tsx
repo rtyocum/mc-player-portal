@@ -13,9 +13,11 @@ import DeleteInviteDialog, {
 } from "./invite-delete";
 
 export default function InvitesContainer({
+  appUrl,
   invites,
   users,
 }: {
+  appUrl: string;
   invites: InviteWithOwner[];
   users: LimitedUser[];
 }) {
@@ -30,7 +32,7 @@ export default function InvitesContainer({
     <>
       <div className="container mx-auto py-10">
         <DataTable
-          columns={columns(deleteInviteDialogState, {
+          columns={columns(appUrl, deleteInviteDialogState, {
             canDelete,
           })}
           openCreateDialog={addInviteDialogState.toggleModal}

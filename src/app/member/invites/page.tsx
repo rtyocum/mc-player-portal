@@ -35,5 +35,11 @@ export default async function UsersPage() {
       name: !!(permission & VIEW_NAMES_EMAILS),
     },
   });
-  return <InvitesContainer invites={invites} users={users} />;
+  return (
+    <InvitesContainer
+      invites={invites}
+      users={users}
+      appUrl={process.env.APP_URL!}
+    />
+  );
 }

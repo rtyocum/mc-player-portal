@@ -8,12 +8,12 @@ import * as jose from "jose";
  **/
 export const clientConfig = {
   issuer: process.env.AUTH_ISSUER_URL!,
-  audience: process.env.NEXT_PUBLIC_APP_URL!,
+  audience: process.env.APP_URL!,
   client_id: process.env.AUTH_CLIENT_ID!,
   client_secret: process.env.AUTH_CLIENT_SECRET!,
   scope: process.env.AUTH_SCOPE!,
-  redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL!}/api/auth/callback`,
-  post_logout_redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL!}`,
+  redirect_uri: `${process.env.APP_URL!}/api/auth/callback`,
+  post_logout_redirect_uri: `${process.env.APP_URL!}`,
   response_type: "code",
   grant_type: "authorization_code",
   post_login_route: `${process.env.APP_URL!}/member/home`,
