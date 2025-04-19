@@ -68,7 +68,7 @@ export default function EditUserDialog(props: Props) {
 
   return (
     <Dialog open={props.state.isOpen} onOpenChange={props.state.toggleModal}>
-      <DialogContent className="sm:max-w-[850px]">
+      <DialogContent className="sm:max-w-[850px] max-h-screen overflow-y-scroll">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader className="mb-5">
@@ -78,7 +78,7 @@ export default function EditUserDialog(props: Props) {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="flex justify-between gap-5 mb-5">
+            <div className="flex flex-col md:flex-row justify-between gap-5 mb-5">
               <div className="space-y-4 grow">
                 <FormItem>
                   <FormLabel>ID</FormLabel>
@@ -157,7 +157,7 @@ export default function EditUserDialog(props: Props) {
                           <div className="flex gap-10">
                             <div
                               className={
-                                "flex flex-col flex-wrap gap-2 justify-between items-start grow border p-5 border-input shadow-sm rounded-md max-h-[275px]" +
+                                "flex flex-col gap-2 justify-between items-start grow border p-5 border-input shadow-sm rounded-md" +
                                 (!props.editablePermissions
                                   ? " opacity-50"
                                   : "")
