@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ColumnDef, HeaderContext } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { DialogState } from "../dialog/dialog-state";
 import { UserView } from "./users-container";
@@ -23,53 +23,15 @@ export const columns = (
   {
     canEdit,
     canDelete,
-    canViewPersonalInfo,
   }: {
     canEdit: boolean;
     canDelete: boolean;
-    canViewPersonalInfo: boolean;
   },
 ): ColumnDef<UserView>[] => [
   {
     accessorKey: "id",
     header: "ID",
   },
-  ...(canViewPersonalInfo
-    ? [
-        {
-          accessorKey: "name",
-          header: ({ column }: HeaderContext<UserView, unknown>) => {
-            return (
-              <Button
-                variant="ghost"
-                onClick={() =>
-                  column.toggleSorting(column.getIsSorted() === "asc")
-                }
-              >
-                Name
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </Button>
-            );
-          },
-        },
-        {
-          accessorKey: "email",
-          header: ({ column }: HeaderContext<UserView, unknown>) => {
-            return (
-              <Button
-                variant="ghost"
-                onClick={() =>
-                  column.toggleSorting(column.getIsSorted() === "asc")
-                }
-              >
-                Email
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </Button>
-            );
-          },
-        },
-      ]
-    : []),
   {
     accessorKey: "username",
     header: ({ column }) => {

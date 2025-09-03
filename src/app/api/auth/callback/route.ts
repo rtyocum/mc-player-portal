@@ -17,8 +17,6 @@ import { publish } from "@/lib/mq";
 type UserCreateParams = {
   uuid: string;
   username: string;
-  name: string;
-  email: string;
 };
 
 /**
@@ -51,7 +49,6 @@ export async function GET(request: NextRequest) {
     const tokenSet = await getAuthorizationCode(request, preSession.payload);
 
     const { access_token: msToken } = tokenSet;
-    const claims = tokenSet.claims()!;
 
     const { profile } = await minecraftAuth(msToken);
 
@@ -68,8 +65,6 @@ export async function GET(request: NextRequest) {
       user = await verifyAndUseInvite(inviteToken, {
         uuid: profile.id,
         username: profile.name,
-        name: claims.name as string,
-        email: claims.email as string,
       });
 
       // If the user exists, update the user information.
@@ -84,8 +79,6 @@ export async function GET(request: NextRequest) {
         },
         data: {
           username: profile.name,
-          name: claims.name as string,
-          email: claims.email as string,
           picture: `https://minotar.net/avatar/${profile.id}`,
         },
       });
@@ -209,8 +202,6 @@ async function verifyAndUseInvite(
     data: {
       uuid: userCreateParams.uuid,
       username: userCreateParams.username,
-      name: userCreateParams.name,
-      email: userCreateParams.email,
       picture: `https://minotar.net/avatar/${userCreateParams.uuid}`,
       permission: MEMBER,
       acceptedInviteId: invite.id,

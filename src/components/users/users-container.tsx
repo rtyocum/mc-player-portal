@@ -3,12 +3,7 @@
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { useSession } from "@/hooks/use-session";
-import {
-  DELETE_USER,
-  EDIT_PERMISSIONS,
-  EDIT_USER,
-  VIEW_NAMES_EMAILS,
-} from "@/lib/permissions";
+import { DELETE_USER, EDIT_PERMISSIONS, EDIT_USER } from "@/lib/permissions";
 import DeleteUserDialog, { useDeleteUserDialogState } from "./user-delete";
 import EditUserDialog, { useEditUserDialogState } from "./users-edit";
 
@@ -29,9 +24,6 @@ export default function UsersContainer({ users }: { users: UserView[] }) {
   const canEditPermissions = !!(
     (session?.user.permission ?? 0) & EDIT_PERMISSIONS
   );
-  const canViewPersonalInfo = !!(
-    (session?.user.permission ?? 0) & VIEW_NAMES_EMAILS
-  );
   const canDelete = !!((session?.user.permission ?? 0) & DELETE_USER);
 
   const editUserDialogState = useEditUserDialogState();
@@ -44,7 +36,6 @@ export default function UsersContainer({ users }: { users: UserView[] }) {
           columns={columns(editUserDialogState, deleteUserDialogState, {
             canEdit,
             canDelete,
-            canViewPersonalInfo,
           })}
           data={users}
         />
@@ -56,7 +47,6 @@ export default function UsersContainer({ users }: { users: UserView[] }) {
         state={editUserDialogState}
         editable={canEdit}
         editablePermissions={canEditPermissions}
-        canViewPersonalInfo={canViewPersonalInfo}
       />
       <DeleteUserDialog
         key={deleteUserDialogState.data?.id + "delete"}

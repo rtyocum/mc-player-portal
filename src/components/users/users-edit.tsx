@@ -34,7 +34,6 @@ type Props = {
   state: DialogState<UserView>;
   editable: boolean;
   editablePermissions: boolean;
-  canViewPersonalInfo: boolean;
 };
 
 const formSchema = z.object({
@@ -87,34 +86,6 @@ export default function EditUserDialog(props: Props) {
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-
-                {props.canViewPersonalInfo ? (
-                  <>
-                    <FormItem>
-                      <FormLabel>UUID</FormLabel>
-                      <FormControl>
-                        <Input disabled value={props.state.data?.uuid} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input disabled value={props.state.data?.name} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input disabled value={props.state.data?.email} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  </>
-                ) : null}
 
                 <FormItem>
                   <FormLabel>Username</FormLabel>

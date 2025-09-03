@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import UsersContainer from "@/components/users/users-container";
-import { VIEW_NAMES_EMAILS, VIEW_USERS } from "@/lib/permissions";
+import { VIEW_USERS } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 
@@ -16,9 +16,7 @@ export default async function UsersPage() {
       id: true,
       uuid: true,
       username: true,
-      email: !!(permission & VIEW_NAMES_EMAILS),
       picture: true,
-      name: !!(permission & VIEW_NAMES_EMAILS),
       permission: true,
       note: true,
     },

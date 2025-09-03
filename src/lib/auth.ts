@@ -31,8 +31,6 @@ export interface SessionData {
   user: {
     uuid: string;
     username: string;
-    name: string;
-    email: string;
     picture: string;
     permission: number;
   };
@@ -64,8 +62,6 @@ export async function getSession(): Promise<SessionData | null> {
         select: {
           uuid: true,
           username: true,
-          name: true,
-          email: true,
           picture: true,
           permission: true,
         },

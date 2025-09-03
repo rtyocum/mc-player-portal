@@ -10,7 +10,6 @@ export const NONMEMBER = VIEW_MEMBERSHIP;
 
 // Admin permissions
 export const VIEW_USERS = 8;
-export const VIEW_NAMES_EMAILS = 16;
 export const EDIT_USER = 64;
 export const EDIT_PERMISSIONS = 128;
 export const DELETE_USER = 256;
@@ -30,7 +29,6 @@ export const PERMISSIONS = [
   { name: "Join Server", value: JOIN_SERVER },
   { name: "Invite", value: INVITE },
   { name: "View Users", value: VIEW_USERS },
-  { name: "View Names & Emails", value: VIEW_NAMES_EMAILS },
   { name: "Edit User", value: EDIT_USER },
   { name: "Edit Permissions", value: EDIT_PERMISSIONS },
   { name: "Delete User", value: DELETE_USER },

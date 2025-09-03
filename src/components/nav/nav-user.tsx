@@ -20,7 +20,7 @@ import {
 import { useSession } from "@/hooks/use-session";
 
 const defaults = {
-  name: "Not Signed In",
+  username: "Not Signed In",
 };
 
 export function NavUser() {
@@ -38,10 +38,10 @@ export function NavUser() {
             >
               <Avatar className="h-9 w-8 rounded-lg">
                 {session ? (
-                  session.user.picture && session.user.name ? (
+                  session.user.picture && session.user.username ? (
                     <AvatarImage
                       src={session.user.picture}
-                      alt={session.user.name}
+                      alt={session.user.username}
                     />
                   ) : null
                 ) : null}
@@ -49,10 +49,7 @@ export function NavUser() {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {session?.user.name ?? defaults.name}
-                </span>
-                <span className="truncate text-xs">
-                  {session?.user.email ?? "Not Signed In"}
+                  {session?.user.username ?? defaults.username}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -68,10 +65,10 @@ export function NavUser() {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   {session ? (
-                    session.user.picture && session.user.name ? (
+                    session.user.picture && session.user.username ? (
                       <AvatarImage
                         src={session.user.picture}
-                        alt={session.user.name}
+                        alt={session.user.username}
                       />
                     ) : null
                   ) : null}
@@ -79,10 +76,7 @@ export function NavUser() {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {session?.user.name ?? defaults.name}
-                  </span>
-                  <span className="truncate text-xs">
-                    {session?.user.email ?? "Not Signed In"}
+                    {session?.user.username ?? defaults.username}
                   </span>
                 </div>
               </div>
