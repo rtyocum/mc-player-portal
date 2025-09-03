@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import InvitesContainer from "@/components/invites/invites-container";
-import { VIEW_NAMES_EMAILS, VIEW_INVITES } from "@/lib/permissions";
+import { VIEW_INVITES } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 
@@ -32,7 +32,6 @@ export default async function UsersPage() {
       id: true,
       username: true,
       picture: true,
-      name: !!(permission & VIEW_NAMES_EMAILS),
     },
   });
   return (

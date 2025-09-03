@@ -52,7 +52,6 @@ export type LimitedUser = {
   id: string;
   username: string;
   picture: string;
-  name?: string;
 };
 
 export interface AddInviteDialogProps {
@@ -220,11 +219,6 @@ export default function AddInviteDialog(props: AddInviteDialogProps) {
                                       <span className="truncate font-semibold">
                                         {user?.username}
                                       </span>
-                                      {user?.name ? (
-                                        <span className="truncate text-xs">
-                                          {user?.name}
-                                        </span>
-                                      ) : null}
                                     </div>
                                   </>
                                 );
@@ -261,11 +255,6 @@ export default function AddInviteDialog(props: AddInviteDialogProps) {
                                   <span className="truncate font-semibold">
                                     {user.username}
                                   </span>
-                                  {user.name ? (
-                                    <span className="truncate text-xs">
-                                      {user.name}
-                                    </span>
-                                  ) : null}
                                 </div>
 
                                 <Check
