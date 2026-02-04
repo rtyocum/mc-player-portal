@@ -8,3 +8,4 @@ This application is meant for players to be able to invite other players to a pr
 * Allow players to invite other players
 * Allow Admins to remove players
 * Allow Admins to update an MOTD.
+
